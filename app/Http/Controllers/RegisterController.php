@@ -10,6 +10,10 @@ use Illuminate\Support\Facades\URL;
 
 class RegisterController extends Controller
 {
+    public function hola()
+    {
+        return response()->json("Hola", 200, $headers);
+    }
     public function logUp(Request $request)
     {
         $input = $request->input("persona");
