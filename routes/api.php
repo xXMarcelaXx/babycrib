@@ -23,4 +23,4 @@ Route::post('/logup',[RegisterController::class,'logUp']);
 Route::post('/logging',[RegisterController::class,'logging']);
 Route::get('/logout',[RegisterController::class,'logOut'])->middleware(['auth:sanctum']);
 Route::get('/hola',[RegisterController::class,'hola']);
-Route::get('/hola',[RegisterController::class,'hola2']);
+Route::get('/hola2',[RegisterController::class,'hola2']);
