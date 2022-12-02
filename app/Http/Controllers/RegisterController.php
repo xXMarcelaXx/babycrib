@@ -12,7 +12,7 @@ class RegisterController extends Controller
 {
     public function hola()
     {
-        return response()->json("Hola", 200, $headers);
+        return response()->json("Hola", 200, );
     }
     public function logUp(Request $request)
     {
