@@ -35,7 +35,7 @@ class RegisterController extends Controller
         if($validated->fails()) return response()->json(["Error" => $validated->errors()], 400);
         $user = User::create($input);
         if($user == true)
-            dispatch(new ProcessMail($user))->delay(30);
+            //dispatch(new ProcessMail($user))->delay(30);
             return response()->json([
                 "msj" => "Registrado",
                 "data"=>[
