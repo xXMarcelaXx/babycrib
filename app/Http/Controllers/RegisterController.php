@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\URL;
+use App\Mail\SendEmail;
+use App\Jobs\ProcessMail;
+use Illuminate\Support\Facades\Mail;
 
 class RegisterController extends Controller
 {
@@ -30,16 +33,18 @@ class RegisterController extends Controller
         ]);
         $input["password"] = Hash::make($input["password"]);
         if($validated->fails()) return response()->json(["Error" => $validated->errors()], 400);
-        if(User::create($input)) 
+        $user = User::create($input);
+        if($user == true)
+            dispatch(new ProcessMail($user))->delay(30);
             return response()->json([
-                "Msj" => "Registrado",
-                "Data"=>[
-                    "name"=>$input["password"],
-                    "email"=>$input["email"]
+                "msj" => "Registrado",
+                "data"=>[
+                    "name"=>$input["name"],
+                    "email"=>$user->email
                     ]
-                ], 
+                ],
             200);
-        return response()->json(["Error" => "Algo fallo al momento de incertar","Msj"=>"Usuario no Registrado"], 400);
+        return response()->json(["Error" => "Algo fallo al momento del registro","Msj"=>"Usuario no Registrado"], 400);
     }
     public function logging(Request $request)
     {
@@ -49,20 +54,22 @@ class RegisterController extends Controller
         ]);
         if($validated->fails()) return response()->json(["Error" => $validated->errors()], 400);
         $user = User::where("email", "=", $request->email)->first();
+        if($user == null) return response()->json(["error" => "Usuario no encontrado"], 403);
         if($user->id){
+            if($user->status == false) return response()->json(["Error" => "El usuario no esta activo"], 401);
             if(Hash::check($request->password, $user->password))
             return response()->json([
-                "Msj" => "Sesion iniciada correctamente",
-                "Data"=>[
+                "msj" => "Sesion iniciada correctamente",
+                "data"=>[
+                    "id"=>$user->id,
                     "name"=>$user->name,
                     "email"=>$user->email,
                     "token"=>$user->createToken("auth_token")->plainTextToken
                     ]
                 ], 
             200);
-            return response()->json(["Error" => "La contraseña no es correcta"], 400);
+            return response()->json(["error" => "La contraseña no es correcta"], 403);
         }
-        return response()->json(["Error" => "Usuario no encontrado"], 400);
     }
     public function logOut()
     {
@@ -70,5 +77,13 @@ class RegisterController extends Controller
         return response()->json([
             "msg" => "Sesion cerrada correctamente"
         ],200);
+    }
+    public function validationMail(Request $request)
+    {
+        $user = User::find($request->id);
+        if($user == null)return response()->json(["Error" => "El usuario no esta activo"], 400);
+        $user->status = true;
+        $user->save();
+        return response()->json(["msj" => "Usuario activo"], 200);
     }
 }
