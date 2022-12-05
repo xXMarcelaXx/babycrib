@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Http;
 class CreateFeedsController extends Controller
 {
         //CREATE
-    protected $key="aio_DJBc469iQz1gwZv5VZHBGToj4QNM",$user="Angel_130/",$url = "https://io.adafruit.com/api/v2/";
+    protected $key="aio_UEnW45Dc20IqrQw4kz1ZcdxLdKAs",$user="Angel_130/",$url = "https://io.adafruit.com/api/v2/";
     public function createGroup(Request $request)
     {
         if(User::find($request->id) == null) return response()->json(["Error" => "Usuario no encontrado"], 404);
