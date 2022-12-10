@@ -13,15 +13,6 @@ use Illuminate\Support\Facades\Mail;
 
 class RegisterController extends Controller
 {
-    public function hola()
-    {
-        return response()->json(["valor"=>"Hola"], 200, );
-    }
-    public function hola2()
-    {
-        return response()->json(["Hola"=> phpinfo()], 200, );
-    }
-
     public function logUp(Request $request)
     {
         $input = $request->input("persona");
@@ -29,13 +20,14 @@ class RegisterController extends Controller
         $validated = Validator::make($input, [
             'name' => 'required|string',
             'email' => 'required|email|unique:users',
-            'password' => 'required|string'
+            'password' => 'required|string',
+            'tel' => 'required|string'
         ]);
         $input["password"] = Hash::make($input["password"]);
         if($validated->fails()) return response()->json(["Error" => $validated->errors()], 400);
         $user = User::create($input);
         if($user == true)
-            //dispatch(new ProcessMail($user))->delay(30);
+            ProcessMail::dispatchAfterResponse($user);
             return response()->json([
                 "msj" => "Registrado",
                 "data"=>[
@@ -78,12 +70,19 @@ class RegisterController extends Controller
             "msg" => "Sesion cerrada correctamente"
         ],200);
     }
-    public function validationMail(Request $request)
+    public function validationCode(Request $request)
     {
-        $user = User::find($request->id);
-        if($user == null)return response()->json(["Error" => "El usuario no esta activo"], 400);
-        $user->status = true;
-        $user->save();
-        return response()->json(["msj" => "Usuario activo"], 200);
+        $validated = Validator::make($request->all(), [
+            'code_verf' => 'required|integer|min:6',
+        ]);
+        if($validated->fails()) return response()->json(["Error" => $validated->errors()], 400);
+        $user=User::where("code_verf","=",$request->code_verf)->first();
+        if($user != null)
+        {
+            $user->status=true;
+            $user->save();
+            return response()->json(["msj" => "Usuario activo"], 200);
+        }
+        return response()->json(["msj" => "No se pudo activar el usuario"], 406);
     }
 }

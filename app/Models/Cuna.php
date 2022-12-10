@@ -13,6 +13,7 @@ class Cuna extends Model
         'name',
         'key',
         'usuario_id',
+        'arduino_id',
         'description',
         'sensor1',
         'sensor2',

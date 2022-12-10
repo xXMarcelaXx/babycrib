@@ -10,8 +10,8 @@ use Illuminate\Support\Facades\Http;
 
 class CreateFeedsController extends Controller
 {
-        //CREATE
-    protected $key="aio_hhzM32mWF0B9E8mCPGVlT80Gx45b",$user="Leoncio2003/",$url = "https://io.adafruit.com/api/v2/";
+    //CREATE
+    protected $user="Angel_130/",$url = "https://io.adafruit.com/api/v2/";
     public function createGroup(Request $request)
     {
         if(User::find($request->id) == null) return response()->json(["Error" => "Usuario no encontrado"], 404);
@@ -20,32 +20,33 @@ class CreateFeedsController extends Controller
         if($cuna == null) return response()->json(["Error" => "Es necesario un objeto cuna con {name,description}"], 400);
         $validated = Validator::make($cuna, [
             'name' => 'required|string',
-            'description' => 'required|string'
+            'description' => 'required|string',
         ]);
         if($validated->fails()) return response()->json(["Error" => $validated->errors()], 400);
         if(Cuna::where([["usuario_id","=",$request->id],["name","=",$cuna["name"]]])->first() != null) return response()->json(["Error" => "Nombre ya utilizado"], 406);
-        $response = Http::withHeaders(['X-AIO-Key'=>$this->key])->post($this->url.$this->user."groups", [
+        $response = Http::withHeaders(['X-AIO-Key'=>$request->header('aioKey')])->post($this->url.$this->user."groups", [
             'group' => $cuna
         ]);
         if($response->successful()) {
             if($sensores != null){
-                if($sensores["sensor1"] == true) $cuna["sensor1"]=$this->createFeed("Sensor1","Sensor numero 1",$response->json("key"));
-                if($sensores["sensor2"] == true) $cuna["sensor2"]=$this->createFeed("Sensor2","Sensor numero 2",$response->json("key"));
-                if($sensores["sensor3"] == true) $cuna["sensor3"]=$this->createFeed("Sensor3","Sensor numero 3",$response->json("key"));
-                if($sensores["sensor4"] == true) $cuna["sensor4"]=$this->createFeed("Sensor4","Sensor numero 4",$response->json("key"));
-                if($sensores["sensor5"] == true) $cuna["sensor5"]=$this->createFeed("Sensor5","Sensor numero 5",$response->json("key"));
-                if($sensores["sensor6"] == true) $cuna["sensor6"]=$this->createFeed("Sensor6","Sensor numero 6",$response->json("key"));
+                if($sensores["Vibracion"] == true) $cuna["sensor1"]=$this->createFeed("Vibracion","Sensor numero 1",$response->json("key"),$request->header('aioKey'));
+                if($sensores["Sonido"] == true) $cuna["sensor2"]=$this->createFeed("Sonido","Sensor numero 2",$response->json("key"),$request->header('aioKey'));
+                if($sensores["Peso"] == true) $cuna["sensor3"]=$this->createFeed("Peso","Sensor numero 3",$response->json("key"),$request->header('aioKey'));
+                if($sensores["Luz"] == true) $cuna["sensor4"]=$this->createFeed("Luz","Sensor numero 4",$response->json("key"),$request->header('aioKey'));
+                if($sensores["Humo"] == true) $cuna["sensor5"]=$this->createFeed("Humo","Sensor numero 5",$response->json("key"),$request->header('aioKey'));
+                if($sensores["Temperatura"] == true) $cuna["sensor6"]=$this->createFeed("Temperatura","Sensor numero 6",$response->json("key"),$request->header('aioKey'));
             }
             $cuna["key"]=$response->json("key");
             $cuna["usuario_id"]=$request->id;
+            $cuna["arduino_id"]="ArduinoC-1";
             Cuna::Create($cuna);
             return response()->json(["msj"=>"Se creado una nueva cuna"], 201);
         }
         return response()->json(["error"=>"No se a podido añadir la cuna"], 401);
     }
-    public function createFeed($nombre,$descripcion,$gkey)
+    public function createFeed($nombre,$descripcion,$gkey,$aioKey)
     {
-        $response = Http::withHeaders(['X-AIO-Key'=>$this->key])->post($this->url.$this->user."groups/".$gkey."/feeds", [    
+        $response = Http::withHeaders(['X-AIO-Key'=>$aioKey])->post($this->url.$this->user."groups/".$gkey."/feeds", [    
             "feed"=>[
                 "description"=>$descripcion,
                 "name"=>$nombre
@@ -66,7 +67,7 @@ class CreateFeedsController extends Controller
         $cuna=Cuna::where([["usuario_id","=",$request->id],["name","=",$request->name]])->first();
         if($cuna == null) return response()->json(["error"=>"No se encontro el dato"], 400);
         $gkey=$cuna->key;
-        $response = Http::withHeaders(['X-AIO-Key'=>$this->key])->post($this->url.$this->user."groups/".$gkey."/feeds", [    
+        $response = Http::withHeaders(['X-AIO-Key'=>$request->header('aioKey')])->post($this->url.$this->user."groups/".$gkey."/feeds", [    
             "feed"=>$feed
         ]);
         if($response->successful()) {
@@ -110,7 +111,7 @@ class CreateFeedsController extends Controller
         $cuna=Cuna::where([["usuario_id","=",$request->id],["name","=",$request->name]])->first();
         if($cuna == null) return response()->json(["error"=>"No se encontro el dato"], 400);
         $groupKey=$cuna->key;
-        $response = Http::withHeaders(['X-AIO-Key'=>$this->key])->delete($this->url.$this->user."groups/".$groupKey, []);
+        $response = Http::withHeaders(['X-AIO-Key'=>$request->header('aioKey')])->delete($this->url.$this->user."groups/".$groupKey, []);
         if($response->ok()) return response()->json(["msj"=>"Se elimina la cuna"], 200);
         return response()->json(["error"=>"No se encontro el dato"], 400);
     }
@@ -155,7 +156,7 @@ class CreateFeedsController extends Controller
         }
         if($fKey!=null)
         {
-            $response = Http::withHeaders(['X-AIO-Key'=>$this->key])->delete($this->url.$this->user."feeds/".$fKey, []);
+            $response = Http::withHeaders(['X-AIO-Key'=>$request->header('aioKey')])->delete($this->url.$this->user."feeds/".$fKey, []);
             if($response->ok()) return response()->json(["msj"=>"Se elimina el sensor"], 200);
         }
         return response()->json(["error"=>"No se encontro el dato"], 400);

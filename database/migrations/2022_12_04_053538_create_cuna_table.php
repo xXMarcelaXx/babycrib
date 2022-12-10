@@ -19,13 +19,14 @@ return new class extends Migration
             $table->string('key');
             $table->unsignedBigInteger('usuario_id');
             $table->foreign('usuario_id')->references('id')->on('users');
+            $table->string('arduino_id');
             $table->text('description');
-            $table->string('sensor1')->nullable();
-            $table->string('sensor2')->nullable();
-            $table->string('sensor3')->nullable();
-            $table->string('sensor4')->nullable();
-            $table->string('sensor5')->nullable();
-            $table->string('sensor6')->nullable();
+            $table->string('sensor1')->nullable()->default("none");
+            $table->string('sensor2')->nullable()->default("none");
+            $table->string('sensor3')->nullable()->default("none");
+            $table->string('sensor4')->nullable()->default("none");
+            $table->string('sensor5')->nullable()->default("none");
+            $table->string('sensor6')->nullable()->default("none");
             $table->timestamps();
         });
     }

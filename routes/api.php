@@ -24,12 +24,20 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/logup',[RegisterController::class,'logUp']);
 Route::post('/logging',[RegisterController::class,'logging']);
 Route::get('/logout',[RegisterController::class,'logOut'])->middleware(['auth:sanctum']);
-Route::get('/tel/{id}',[RegisterController::class,'validationMail'])->name("verificationMail")->middleware('signed');
+Route::post('/verf',[RegisterController::class,'validationCode'])->where("id","[0-9]+");
 
-Route::post('/create/{id}/{name}',[CreateFeedsController::class,'agregarFeed'])->where("id","[0-9]+");
-Route::post('/create/{id}',[CreateFeedsController::class,'createGroup'])->where("id","[0-9]+");
-Route::delete('/delete/{id}/{name}',[CreateFeedsController::class,'deleteGroup'])->where("id","[0-9]+");
-Route::delete('/delete/{id}/{name}/{sensor}',[CreateFeedsController::class,'deleteFeed'])->where("id","[0-9]+");
+Route::post('/create/{id}/{name}',[CreateFeedsController::class,'agregarFeed']
+        )->where("id","[0-9]+")->middleware(['auth:sanctum']);
+Route::post('/create/{id}',[CreateFeedsController::class,'createGroup']
+        )->where("id","[0-9]+")->middleware(['auth:sanctum']);
+Route::delete('/delete/{id}/{name}',[CreateFeedsController::class,'deleteGroup']
+        )->where("id","[0-9]+")->middleware(['auth:sanctum']);
+Route::delete('/delete/{id}/{name}/{sensor}',[CreateFeedsController::class,'deleteFeed']
+        )->where("id","[0-9]+")->middleware(['auth:sanctum']);
 
-Route::post('/createCrib',[CreateFeedsController::class,'createCrib']);
-Route::get('/cuna/{id}',[GetFeedsController::class,'getCuna']);
+
+Route::get('/key/{id}',[GetFeedsController::class,'getKeys']);
+Route::get('/prueba',[GetFeedsController::class,'prueba']);
+Route::post('/createCrib',[CreateFeedsController::class,'createCrib'])->middleware(['auth:sanctum']);
+Route::get('/cuna/{id}',[GetFeedsController::class,'getCuna'])->middleware(['auth:sanctum']);
+Route::get('/cuna/{id}/{name}',[GetFeedsController::class,'getFeeds']);
