@@ -42,7 +42,7 @@ class GetFeedsController extends Controller
     public function getFeed($key_feed,$keyAio)
     {
         $def="none";
-        $response = Http::withHeaders(['X-AIO-Key'=>"aio_dBLA40utyBP2hi2p6XR2nDRqNh6r"])->get(
+        $response = Http::withHeaders(['X-AIO-Key'=>"aio_KsXH94NweMDJIIFxPKUZo0hETUuw"])->get(
             $this->url.$this->user."feeds/".$key_feed);
         if($response->ok()){
              $def = $response->object()->last_value;
