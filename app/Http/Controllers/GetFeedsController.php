@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Http;
 
 class GetFeedsController extends Controller
 {
-    protected $user="Angel_130/",$url = "https://io.adafruit.com/api/v2/";
+    protected $user="Leoncio2003/",$url = "https://io.adafruit.com/api/v2/";
     public function getCuna(Request $request)
     {
         $datos=Cuna::where("usuario_id","=",$request->id)->get();
