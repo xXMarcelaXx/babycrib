@@ -25,7 +25,7 @@ class CreateFeedsController extends Controller
         if($validated->fails()) return response()->json(["Error" => $validated->errors()], 400);
         if(Cuna::where([["usuario_id","=",$request->id],["name","=",$cuna["name"]]])->first() != null) return response()->json(["Error" => "Nombre ya utilizado"], 406);
         $response = Http::withHeaders(['X-AIO-Key'=>$request->header('aioKey')])->post($this->url.$this->user."groups", [
-            'group' => $cuna
+            'group' => ''
         ]);
         if($response->successful()) {
             if($sensores != null){
