@@ -39,16 +39,7 @@ class GetFeedsController extends Controller
         if($cuna->sensor6 != null) $datos[]=$this->getFeed($cuna->sensor6,$request->header('aioKey'));
         return response()->json(["data"=>$datos], 200);
     }
-    public function getFeed($key_feed,$keyAio)
-    {
-        $def="none";
-        $response = Http::withHeaders(['X-AIO-Key'=>"aio_rlIe15MniOddb6oUHZlzZP4gfXFr"])->get(
-            $this->url.$this->user."feeds/".$key_feed);
-        if($response->ok()){
-             $def = $response->object()->last_value;
-        }
-        return ["value"=>$def];
-    }
+
     public function getKeys(Request $request)
     {
         $cuna=Cuna::where("arduino_id","=",$request->id)->first();
