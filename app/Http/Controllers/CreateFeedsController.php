@@ -15,7 +15,7 @@ class CreateFeedsController extends Controller
     public function createGroup(Request $request)
     {
         if(User::find($request->id) == null) return response()->json(["Error" => "Usuario no encontrado"], 404);
-        $cuna = "default";
+        $cuna = $request->input("Default");
         $sensores=$request->input("sensores");
         if($cuna == null) return response()->json(["Error" => "Es necesario un objeto cuna con {name,description}"], 400);
         $validated = Validator::make($cuna, [
@@ -29,7 +29,7 @@ class CreateFeedsController extends Controller
         ]);
         if($response->successful()) {
             if($sensores != null){
-                if($sensores["Vibracion"] == true) $cuna["sensor1"]=$this->createFeed("MedirVibracion","Sensor numero 1",$response->json("key"),$request->header('aioKey'));
+                if($sensores["Vibracion"] == true) $cuna["sensor1"]=$this->createFeed("Medir Vibracion","Sensor numero 1",$response->json("key"),$request->header('aioKey'));
                 if($sensores["Sonido"] == true) $cuna["sensor2"]=$this->createFeed("Medir Sonido","Sensor numero 2",$response->json("key"),$request->header('aioKey'));
                 if($sensores["Peso"] == true) $cuna["sensor3"]=$this->createFeed("Peso","Sensor numero 3",$response->json("key"),$request->header('aioKey'));
                 if($sensores["Luz"] == true) $cuna["sensor4"]=$this->createFeed("Medir Luz","Sensor numero 4",$response->json("key"),$request->header('aioKey'));
