@@ -15,7 +15,7 @@ class CreateFeedsController extends Controller
     public function createGroup(Request $request)
     {
         if(User::find($request->id) == null) return response()->json(["Error" => "Usuario no encontrado"], 404);
-        $cuna = $request->input("Default");
+        $cuna = $request->input("cuna");
         $sensores=$request->input("sensores");
         if($cuna == null) return response()->json(["Error" => "Es necesario un objeto cuna con {name,description}"], 400);
         $validated = Validator::make($cuna, [
