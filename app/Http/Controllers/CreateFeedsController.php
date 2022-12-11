@@ -31,7 +31,6 @@ class CreateFeedsController extends Controller
             if($sensores != null){
                 if($sensores["Vibracion"] == true) $cuna["sensor1"]=$this->createFeed("Medir Vibracion","Sensor numero 1",$response->json("key"),$request->header('aioKey'));
                 if($sensores["Sonido"] == true) $cuna["sensor2"]=$this->createFeed("Medir Sonido","Sensor numero 2",$response->json("key"),$request->header('aioKey'));
-                if($sensores["Peso"] == true) $cuna["sensor3"]=$this->createFeed("Peso","Sensor numero 3",$response->json("key"),$request->header('aioKey'));
                 if($sensores["Luz"] == true) $cuna["sensor4"]=$this->createFeed("Medir Luz","Sensor numero 4",$response->json("key"),$request->header('aioKey'));
                 if($sensores["Humo"] == true) $cuna["sensor5"]=$this->createFeed("Medir Gas","Sensor numero 5",$response->json("key"),$request->header('aioKey'));
                 if($sensores["Temperatura"] == true) $cuna["sensor6"]=$this->createFeed("Medir Temperatura","Sensor numero 6",$response->json("key"),$request->header('aioKey'));
