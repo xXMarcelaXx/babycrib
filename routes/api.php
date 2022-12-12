@@ -29,7 +29,7 @@ Route::post('/verf',[RegisterController::class,'validationCode'])->where("id","[
 Route::post('/create/{id}/{name}',[CreateFeedsController::class,'agregarFeed']
         )->where("id","[0-9]+")->middleware(['auth:sanctum']);
 Route::post('/create/{id}',[CreateFeedsController::class,'createGroup']
-        )->where("id","[0-9]+")->middleware(['auth:sanctum']);
+        )->where("id","[0-9]+");
 Route::delete('/delete/{id}/{name}',[CreateFeedsController::class,'deleteGroup']
         )->where("id","[0-9]+")->middleware(['auth:sanctum']);
 Route::delete('/delete/{id}/{name}/{sensor}',[CreateFeedsController::class,'deleteFeed']

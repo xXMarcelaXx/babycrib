@@ -9,12 +9,13 @@ use Illuminate\Support\Facades\Http;
 
 class GetFeedsController extends Controller
 {
-    protected $user="Leoncio2003/",$url = "https://io.adafruit.com/api/v2/";
+    protected $user="Leoncio030203/",$url = "https://io.adafruit.com/api/v2/";
     public function getCuna(Request $request)
     {
         $datos=Cuna::where("usuario_id","=",$request->id)->get();
         return response()->json(["data"=>$datos], 200);
-        $response = Http::withHeaders(['X-AIO-Key'=>$request->header('aioKey')])->get($this->url.$this->user."groups");
+        $response = Http::withHeaders(['X-AIO-Key'=>$request->header('aioKey')])->get(
+            $this->url.$this->user."groups");
         if($response->ok()){
             $n=0;
             for($i = 0; $i < count($response->json());$i=$i+1)
@@ -39,7 +40,13 @@ class GetFeedsController extends Controller
         if($cuna->sensor6 != null) $datos[]=$this->getFeed($cuna->sensor6,$request->header('aioKey'));
         return response()->json(["data"=>$datos], 200);
     }
-
+    public function getFeed($keySensor,$keyAio)
+    {
+        $response = Http::withHeaders(['X-AIO-Key'=>$keyAio])->get(
+            $this->url.$this->user."feeds/".$keySensor);
+            if($response->json('last_value') != null) return ["value"=>$response->json('last_value')];
+            return ["value"=>"none"];
+    }
     public function getKeys(Request $request)
     {
         $cuna=Cuna::where("arduino_id","=",$request->id)->first();
