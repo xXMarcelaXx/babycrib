@@ -17,7 +17,9 @@ class GetFeedsController extends Controller
         $response = Http::withHeaders(['X-AIO-Key'=>$request->header('aioKey')])->get(
             $this->url.$this->user."groups");
         if($response->ok()){
-            $n=0;
+            if($response->object("feeds") != null)
+            {
+                $n=0;
             for($i = 0; $i < count($response->json());$i=$i+1)
             {
                 if($i!=0)
@@ -25,6 +27,7 @@ class GetFeedsController extends Controller
                     $datos[$n]=["name"=>$response->json($i)["name"],
                     "description"=>$response->json($i)["description"]];
                 }
+            }
             }
         }
         return response()->json(["Error"=>"error"], 400);
