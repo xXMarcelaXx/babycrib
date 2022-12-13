@@ -27,6 +27,7 @@ class GetFeedsController extends Controller
                 }
             }
         }
+        return response()->json(["Error"=>"error"], 400);
     }
     public function getFeeds(Request $request)
     {
