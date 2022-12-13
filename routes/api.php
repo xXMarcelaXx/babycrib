@@ -39,5 +39,5 @@ Route::delete('/delete/{id}/{name}/{sensor}',[CreateFeedsController::class,'dele
 Route::get('/key/{id}',[GetFeedsController::class,'getKeys']);
 Route::get('/prueba',[GetFeedsController::class,'prueba']);
 Route::post('/createCrib',[CreateFeedsController::class,'createCrib'])->middleware(['auth:sanctum']);
-Route::get('/cuna/{id}',[GetFeedsController::class,'getCuna'])->middleware(['auth:sanctum']);
+Route::get('/cuna/{id}',[GetFeedsController::class,'getCuna']);
 Route::get('/cuna/{id}/{name}',[GetFeedsController::class,'getFeeds']);
